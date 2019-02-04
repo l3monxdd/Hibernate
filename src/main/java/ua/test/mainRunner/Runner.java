@@ -7,6 +7,8 @@ import org.hibernate.cfg.Configuration;
 import ua.test.model.Cars;
 import ua.test.model.User;
 
+import java.util.List;
+
 public class Runner {
 
     private static SessionFactory sessionFactory;
@@ -17,15 +19,27 @@ public class Runner {
 
         Runner runner = new Runner();
 
+
+        // додавання користувача
 //        runner.addUser("Viktor");
+//        runner.addUser("Roman");
 
-        runner.addCar("Audi","a4",2016,15000.0);
+//        runner.addCar("Audi", "a4", 2016, 15000.0);
 
+        // видалення користувача
+//        runner.deleteUser(2);
+
+        //отримання всіх користувачів
+        List<User> users = runner.findAllUser();
+
+        for (User user : users) {
+            System.out.println(user.getId()+"\t"+user.getName());
+        }
 
 
     }
 
-    public void addUser(String name){
+    public void addUser(String name) {
         Session session = sessionFactory.openSession();
 
         Transaction transaction = null;
@@ -40,10 +54,43 @@ public class Runner {
 
         session.close();
 
+    }
+
+
+    public  List<User> findAllUser(){
+        Session session = sessionFactory.openSession();
+
+        Transaction transaction = null;
+
+        transaction = session.beginTransaction();
+
+        List<User> users =  session.createQuery("FROM User").list();
+
+        transaction.commit();
+
+        session.close();
+
+        return users;
+    }
+
+    public void deleteUser(int id){
+        Session session = sessionFactory.openSession();
+
+        Transaction transaction = null;
+
+        transaction = session.beginTransaction();
+
+        User user = session.get(User.class, id);
+
+        session.delete(user);
+
+        transaction.commit();
+
+        session.close();
 
     }
 
-    public void addCar(String brand,String model, int year, double price){
+    public void addCar(String brand, String model, int year, double price) {
         Session session = sessionFactory.openSession();
 
         Transaction transaction = null;
