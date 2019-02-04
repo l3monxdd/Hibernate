@@ -30,11 +30,14 @@ public class Runner {
 //        runner.deleteUser(2);
 
         //отримання всіх користувачів
-        List<User> users = runner.findAllUser();
+//        List<User> users = runner.findAllUser();
+//
+//        for (User user : users) {
+//            System.out.println(user.getId() + "\t" + user.getName());
+//        }
 
-        for (User user : users) {
-            System.out.println(user.getId()+"\t"+user.getName());
-        }
+        //оновлення юзера
+//        runner.updateUser(3, "Ivan");
 
 
     }
@@ -56,15 +59,32 @@ public class Runner {
 
     }
 
-
-    public  List<User> findAllUser(){
+    public void updateUser(int id, String name){
         Session session = sessionFactory.openSession();
 
         Transaction transaction = null;
 
         transaction = session.beginTransaction();
 
-        List<User> users =  session.createQuery("FROM User").list();
+        User user = session.get(User.class, id);
+        user.setName(name);
+
+        session.save(user);
+
+        transaction.commit();
+
+        session.close();
+    }
+
+
+    public List<User> findAllUser() {
+        Session session = sessionFactory.openSession();
+
+        Transaction transaction = null;
+
+        transaction = session.beginTransaction();
+
+        List<User> users = session.createQuery("FROM User").list();
 
         transaction.commit();
 
@@ -73,7 +93,7 @@ public class Runner {
         return users;
     }
 
-    public void deleteUser(int id){
+    public void deleteUser(int id) {
         Session session = sessionFactory.openSession();
 
         Transaction transaction = null;
